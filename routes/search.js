@@ -9,14 +9,17 @@ router.get("/", (req, res) => {
 router.get("/:username", (req, res) => {
     let usernameProfila = req.params.username
     console.log("Tražim profil: ", usernameProfila)
-    // -X GET http://localhost:3000/profil/username
+    
+    let trazeniProfil = profili.find(p => p.username === usernameProfila);
 
-    let trazeniProfil = profili.find(p => { 
-        return usernameProfila == p.username
-    })
-    res.json(trazeniProfil)
+    if(trazeniProfil) {
+        res.status(200).json({ profil: trazeniProfil })
+    } else {
+        res.status(404).json({ message: `Korisnik ${usernameProfila} ne postoji!` })
+    } 
 })
 
+//search se treba proširiti da bude pretraživanje po id-u, imenu, itd...
 export default router
 
 

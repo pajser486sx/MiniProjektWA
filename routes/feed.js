@@ -6,4 +6,6 @@ router.get("/", (req, res) => {
   res.status(200).json({ message: "feed route working" })
 })
 
+//dohvacanje objava
+
 export default router

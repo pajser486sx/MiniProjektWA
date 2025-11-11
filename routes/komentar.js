@@ -1,29 +1,51 @@
 import { Router } from "express"
-import profili from "./data/profili.js"
 const router = Router()
 
-let comments = []
+let comments = [
+  {id: 1, username: "mimozaaa", text: "Super slika!", createdAt: "2025-11-11T07:12:29.185Z" },
+]
+
+//treba biti dodana mogucnost da korisnik dodaje komentar na sliku ili story
+
 
 router.get("/", (req, res) => {
-  res.status(200).json({ message: "komentar route working" })
-})
+  console.log("Svi komentari:", comments)
+  res.status(200).json(comments)
+});
+
 
 router.post("/", (req, res) => {
-    let noviKomentar = req.body
-    comments.push(noviKomentar)
-    res.status(201).json({ message: "Komentar dodan", komentar: noviKomentar })
+  let { username, text } = req.body
+
+  if (!username || !text) {
+    return res.status(400).json({ greška: "Polja 'username' i 'text' su obavezna." })
+  }
+  let newComment = {
+    id: comments.length ? comments[comments.length - 1].id + 1 : 1,
+    username,
+    text,
+    createdAt: new Date()
+  };
+
+  comments.push(newComment)
+  console.log("Novi komentar dodan:", newComment)
+  res.status(201).json({ message: "Komentar dodan", komentar: newComment })
 })
 
 router.patch("/:id", (req, res) => {
-    let idKomentara = parseInt(req.params.id)
-    let izmjene = req.body
-    let komentarIndex = comments.findIndex(c => c.id === idKomentara)
-    if (komentarIndex !== -1) {
-        comments[komentarIndex] = { ...comments[komentarIndex], ...izmjene }
-        res.status(200).json({ message: "Komentar ažuriran", komentar: comments[komentarIndex] })
-    } else {
-        res.status(404).json({ message: "Komentar nije pronađen" })
-    }
-})  
+  const idKomentara = parseInt(req.params.id)
+  const izmjene = req.body
 
-export default router
+  const komentarIndex = comments.findIndex(c => c.id === idKomentara)
+  if (komentarIndex === -1) {
+    return res.status(404).json({ message: "Komentar nije pronađen." })
+  }
+
+  comments[komentarIndex] = { ...comments[komentarIndex], ...izmjene, updatedAt: new Date() }
+
+  console.log("Komentar ažuriran:", comments[komentarIndex])
+  res.status(200).json({ message: "Komentar ažuriran", komentar: comments[komentarIndex] })
+});
+
+export default router;
+
