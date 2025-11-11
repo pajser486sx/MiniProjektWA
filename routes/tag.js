@@ -3,7 +3,7 @@ import profili from "./data/profili.js"
 const router = Router()
 
 router.get("/", (req, res) => {
-  res.status(200).json({ message: "follow route working" });
+  res.status(200).json({ message: "tag route working" });
 });
 
 export default router
